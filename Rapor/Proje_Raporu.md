@@ -42,3 +42,11 @@ Fiziksel şifrelemeye ek olarak, veri gizliliğini (Data Privacy) sağlamak ve h
 * **Uygulanan İşlem:** `dbo.DimEmployee` tablosunda bulunan `EmailAddress` kolonu, SQL Server'ın yerleşik `email()` fonksiyonu kullanılarak maskelenmiştir.
 * **Yetki Entegrasyonu:** Kurulan Rol Bazlı Erişim Kontrolü (RBAC) ile entegre çalışacak şekilde, İnsan Kaynakları rolüne (`Rol_IK`) maskeyi kaldırma (`UNMASK`) yetkisi tanımlanmıştır.
 * **Test Süreci:** Standart okuma yetkisine sahip `ProjeKullanicisi` hesabı ile sorgu atıldığında e-posta adreslerinin `sXXX@XXXX.com` formatında maskelendiği görülmüştür. Aynı sorgu `Selin_IK` kullanıcısı ile atıldığında ise `UNMASK` yetkisi sayesinde verilerin orijinal ve okunabilir formatta listelendiği test edilerek başarılı bir veri gizliliği mimarisi oluşturulmuştur.
+
+## Bölüm 6: Zaman Bazlı Erişim Kısıtlaması (Logon Trigger)
+
+Veritabanı güvenliğini en üst düzeye çıkarmak ve çalınan kimlik bilgileriyle (credential theft) yapılabilecek mesai dışı sızıntıları engellemek amacıyla sunucu düzeyinde Logon Trigger mimarisi kullanılmıştır.
+
+* **Uygulanan İşlem:** SQL Server üzerinde `trg_MesaiSaatleriKorumasi` adında, her giriş denemesinde tetiklenen bir güvenlik duvarı oluşturulmuştur.
+* **Kısıtlama Mantığı:** Sistem, `ORIGINAL_LOGIN()` fonksiyonu ile giriş yapan kullanıcıyı tespit edip `GETDATE()` ile sunucu saatini kontrol etmektedir. 
+* **Test ve Kanıt:** Kural gereği 08:00 - 18:00 saatleri dışında giriş yapması yasaklanan `Arda_Analiz` hesabı ile mesai saatleri dışında sisteme bağlanılmaya çalışılmış ve doğru şifre girilmesine rağmen bağlantı isteğinin sunucu tarafından `ROLLBACK` komutuyla iptal edilip erişimin reddedildiği (Logon failed due to trigger execution) kanıtlanmıştır. Sistemin kilitlenmesini önlemek adına bu güvenlik duvarı DBA (sa) hesapları dışında tutulmuştur.
