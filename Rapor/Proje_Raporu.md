@@ -34,3 +34,11 @@ Kullanıcı aktivitelerini izlemek ve şüpheli işlemleri tespit etmek için SQ
 
 * **Uygulanan İşlem:** Sunucu düzeyinde bir "Server Audit" oluşturulmuş ve logların işletim sisteminde `C:\Temp\` klasörüne yazılması sağlanmıştır.
 * **İzleme Kuralları:** `DersDB` veritabanı düzeyinde bir "Database Audit Specification" oluşturularak, özellikle `dbo.DimEmployee` tablosu üzerindeki tüm okuma (`SELECT`) ve güncelleme (`UPDATE`) işlemleri izlemeye alınmıştır. Sisteme gönderilen test sorgularının başarıyla log dosyasına (event_time, action_id, statement) yazıldığı teyit edilmiştir.
+
+## Bölüm 5: Dinamik Veri Maskeleme (Dynamic Data Masking - DDM)
+
+Fiziksel şifrelemeye ek olarak, veri gizliliğini (Data Privacy) sağlamak ve hassas verilerin ekranlarda yetkisiz personellere görünmesini engellemek amacıyla Dinamik Veri Maskeleme (DDM) teknolojisi kullanılmıştır.
+
+* **Uygulanan İşlem:** `dbo.DimEmployee` tablosunda bulunan `EmailAddress` kolonu, SQL Server'ın yerleşik `email()` fonksiyonu kullanılarak maskelenmiştir.
+* **Yetki Entegrasyonu:** Kurulan Rol Bazlı Erişim Kontrolü (RBAC) ile entegre çalışacak şekilde, İnsan Kaynakları rolüne (`Rol_IK`) maskeyi kaldırma (`UNMASK`) yetkisi tanımlanmıştır.
+* **Test Süreci:** Standart okuma yetkisine sahip `ProjeKullanicisi` hesabı ile sorgu atıldığında e-posta adreslerinin `sXXX@XXXX.com` formatında maskelendiği görülmüştür. Aynı sorgu `Selin_IK` kullanıcısı ile atıldığında ise `UNMASK` yetkisi sayesinde verilerin orijinal ve okunabilir formatta listelendiği test edilerek başarılı bir veri gizliliği mimarisi oluşturulmuştur.
