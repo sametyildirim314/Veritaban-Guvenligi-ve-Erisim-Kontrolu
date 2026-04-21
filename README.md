@@ -1,3 +1,5 @@
+
+# Video: https://youtu.be/fQPXV_XUyXU
 # BLM4522 Proje 3: Veritabanı Güvenliği ve Erişim Kontrolü
 
 Bu depo, Ağ Tabanlı Paralel Dağıtım Sistemleri dersi kapsamındaki proje ödevlerinden **"Proje 3: Veritabanı Güvenliği ve Erişim Kontrolü"** uygulamasını içermektedir. Proje, MSSQL Server üzerinde veritabanı güvenliğini sağlamaya yönelik temel adımların uygulamalı bir şekilde gerçekleştirilmesini ve belgelenmesini amaçlamaktadır.
